@@ -1,117 +1,51 @@
-import pandas as pd
-import config
-from utils import validate_columns
-from figures import pirate_plot
-from output import save_markdown, save_latex
+import utils as utils
 
-# Rows to exclude per intervention based on review of raw UES data
-DROP_ROWS = {
-    'PH': [],
-    'AR': [],
-    'MR': [],
-    'VR': []
-}
+INSTRUMENT_CODE = 'ues'
+XR_CONDITIONS = ['ph', 'ar', 'mr', 'vr']
+SCORING_SUBSCALES=['fa', 'pu', 'ae', 'rw', 'g']
 
-INTERVENTIONS = {
-    'Phone': ('PH', config.UES_COLS_PH),
-    'AR':    ('AR', config.UES_COLS_AR),
-    'MR':    ('MR', config.UES_COLS_MR),
-    'VR':    ('VR', config.UES_COLS_VR),
-}
+def main(cleaned_responses_long, figures_path):
+    wide_responses_by_condition = utils.create_wide_responses_by_condition(cleaned_responses_long, INSTRUMENT_CODE, XR_CONDITIONS)
 
-# Sum all responses (UES-04, UES-05 and UES-06 are reverse coded) and divide by 12
-def calc_ues(subset):
-   return
+    # TODO: Determine data imputation and exclusion criteria
 
-# Sum questions EUS-01 to EUS-03 and divide by 3
-def calc_ues_focused_attention(subset):
-   return
+    # score responses by condition for this instrument
+    for dataframe, xr_condition in zip(wide_responses_by_condition, XR_CONDITIONS):
+        add_eus_score_column(dataframe, INSTRUMENT_CODE, xr_condition)
 
-# Sum questions EUS-04 to EUS-06 (reverse coded) and divide by 3
-def calc_ues_perceived_usability(subset):
-   return
+    # summarize response scores by subscale for each condition
+    scores_by_condition = utils.combine_scores_by_condition(wide_responses_by_condition, INSTRUMENT_CODE, XR_CONDITIONS, SCORING_SUBSCALES)
 
-# Sum questions EUS-07 to EUS-09 and divide by 3
-def calc_ues_aesthetic_appeal(subset):
-   return
+    # Print response and summary dataframes
+    utils.print_scores_by_condition(wide_responses_by_condition, INSTRUMENT_CODE)
+    utils.print_score_summary_for_instrument(scores_by_condition, INSTRUMENT_CODE)
 
-# Sum questions EUS-10 to EUS-12 and divide by 3
-def calc_ues_reward(subset):
-   return
+    # Generate visualizations and summary stats for data exploration
+    utils.create_pirate_plots(scores_by_condition, INSTRUMENT_CODE, XR_CONDITIONS, SCORING_SUBSCALES, figures_path)
 
-def validate_ues_scores(df, label):
-    scores = df['ues_score']
-    invalid = ~ scores.between(0, 100)
-    if invalid.any():
-        raise ValueError(
-            f"{label} UES scores out of valid range (0-100):\n"
-            f"  Row indices: {list(df.index[invalid])}\n"
-            f"  Values: {list(scores[invalid])}"
-        )
-    return
+def add_eus_score_column(responses_wide, instrument_code, xr_condition):
+    '''
+    The UES short form has 12 questions. Columns 4-6 (ues-04, ues-05, ues-06) are reverse scored before making calculations.
+    A general score (G) averages all twelve question, and four subscale average three questions.
+    Focused Attentions (FA) averages columns 1-3. Perceived Usability (PU) averages columns 4-6.
+    Aesthetic Elements (AE) averages columns 7-9. Reward Factor (RW) averages columns 10-12.
+    :param responses_wide: The dataframe for a specific XR immersion level
+    :param instrument: A reference to the specific instrument
+    :param xr_condition: A reference to the specific XR immersion level
+    '''
+    prefix = f"{xr_condition}-{instrument_code}"
+    items = responses_wide.iloc[:, 0:12].copy()
 
-def compute_ues(df, label):
-    validate_columns(df, label)
-    result = df.assign(ues_score=calc_ues)
-    return result
+    # reverse scoring
+    reversed_items = ['ues-04', 'ues-05', 'ues-06']
+    items =  responses_wide.iloc[:, 0:12].copy()
+    items[reversed_items] = 6 - items[reversed_items]
 
-def prepare_subset(df, label, cols):
-    subset = df[cols]
-    if label in DROP_ROWS:
-        subset = subset.drop(DROP_ROWS[label])
-    return compute_ues(subset, label)
+    responses_wide[f'{prefix}-fa-score'] = items.iloc[:, 0:3].mean(axis=1, skipna=False)
+    responses_wide[f'{prefix}-pu-score'] = items.iloc[:, 3:6].mean(axis=1, skipna=False)
+    responses_wide[f'{prefix}-ae-score'] = items.iloc[:, 6:9].mean(axis=1, skipna=False)
+    responses_wide[f'{prefix}-rw-score'] = items.iloc[:, 9:12].mean(axis=1, skipna=False)
+    responses_wide[f'{prefix}-g-score'] = items.mean(axis=1, skipna=False)
 
-def print_raw_data(subsets):
-    for label, subset in subsets.items():
-        print(f"\n--- {label} Raw SUS Data ---")
-        print(subset.to_string(index=False))
-
-def build_score_table(scored_dfs, labels):
-    first = list(scored_dfs.values())[0]
-    frames = [first['Participant']] + [scored_dfs[label]['ues_score'] for label in labels]
-    result = pd.concat(frames, axis=1)
-    result.columns = ['Participant'] + labels
-    return result
-
-def print_means(means, labels):
-    for label, mean in zip(labels, means):
-        print(f"{label} UES score: {mean: .2f}")
-
-def run(df):
-    # Prepare raw subsets with excluded rows removed
-    subsets = {
-        label: prepare_subset(df, key, cols)
-        for label, (key, cols) in INTERVENTIONS.items()
-    }
-
-    #print raw data for review before scoring
-    print_raw_data(subsets)
-
-    #compute UES scores
-    # scored = {
-    #     label: compute_ues(subset, label)
-    #     for label, subset in subsets.items()
-    # }
-    #
-    # labels = list(scored.keys())
-    # means = [scored[label]['ues_score'].mean() for label in labels]
-    # scores = [scored][label][['ues_score'] for label in labels]
-    #
-    # df_ues_ind_scores = build_score_table(scored, labels)
-    #
-    # print_means(means, labels)
-    # print("\nInividual Scores")
-    # print(df_ues_ind_scores.to_string(index=False))
-
-    # Generate data tables in markdown and LaTeX and save to file
-    # save_markdown(df_ues_ind_scores, 'table_ues_ind_scores.md', False)
-    # save_latex(df_ues_ind_scores, 'table_ues_ind_scores.md', 'UES Participant Scores by Intervention')
-
-    # Create Figures and save to file
-    # pirate_plot(
-    #     data=scores,
-    #     labels=labels,
-    #     title='UES Score Distribution by Intervention',
-    #     ylabel='UES Score',
-    #     output_path=config.FIGURES_PATH / 'ues_pirate.png'
-    # )
+if __name__ == "__main__":
+    main()
