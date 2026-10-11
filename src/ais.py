@@ -33,10 +33,10 @@ def add_ais_score_column(responses_wide, instrument_code, xr_condition):
     '''
     prefix = f"{xr_condition}-{instrument_code}"
 
-    responses_wide[f'{prefix}-cr-score'] = responses_wide['ais-01']
-    responses_wide[f'{prefix}-tr-score'] = responses_wide['ais-02']
-    responses_wide[f'{prefix}-un-score'] = responses_wide['ais-03']
-    responses_wide[f'{prefix}-ea-score'] = responses_wide['ais-04']
+    responses_wide[f'{prefix}-cr-score'] = responses_wide.iloc[:, 0]
+    responses_wide[f'{prefix}-tr-score'] = responses_wide.iloc[:, 1]
+    responses_wide[f'{prefix}-un-score'] = responses_wide.iloc[:, 2]
+    responses_wide[f'{prefix}-ea-score'] = responses_wide.iloc[:, 3]
     responses_wide[f'{prefix}-total-score'] = responses_wide.iloc[:, 0:4].mean(axis=1, skipna=False)
 
 if __name__ == "__main__":

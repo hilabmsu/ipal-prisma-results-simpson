@@ -37,9 +37,9 @@ def add_ipq_score_column(responses_wide, instrument_code, xr_condition):
     items = responses_wide.iloc[:, 0:14].copy()
 
     # reverse scoring
-    reversed_items = ['ipq-03', 'ipq-09', 'ipq-11']
+    reversed_items = [2, 8, 10]
     items =  responses_wide.iloc[:, 0:14].copy()
-    items[reversed_items] = 5 - items[reversed_items]
+    items.iloc[:, reversed_items] = 5 - items.iloc[:, reversed_items]
 
     responses_wide[f'{prefix}-gp-score'] = items.iloc[:, 0]
     responses_wide[f'{prefix}-sp-score'] = items.iloc[:, 1:6].mean(axis=1, skipna=False)
