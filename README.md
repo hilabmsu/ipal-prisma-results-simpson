@@ -1,6 +1,31 @@
 # iPAL PRISMA Participant Database Structure
 
-Folder Structure:
+## Running the Analysis with Python
+The python scripts for running the analysis are located in the `src` directory.
+Running the `main.py` file will load the data and present a menu of instruments
+on which to run the analysis.
+
+Navigate to the src folder in a terminal window, and run the following command:
+> `python main.py`
+
+List of important files:
+* `main.py` the primary executable for the analysis program
+* `config.py` global variables
+* `utils.py` shared functions
+* `figure.py` data visualization plots
+
+Each instrument has a dedicated file which for generating instrument
+specific dataframes, scoring, etc.
+* `ais.py` iPAL Application Evaluation
+* `dm.py` Demographics Questionnaire
+* `ipq.py` iGroup Presence Questionnaire
+* `ss.py` Stability Survey
+* `ssq.py` Kennedy Simulator Sickness Questionnaire
+* `sus.py` System Usability Scale
+* `ues.py` User Engagement Scale
+
+
+## Folder Structure:
 
 
 ```
@@ -184,7 +209,7 @@ S001/
 ## Demographics Questionnaire (DM)
 | item_id | label                                                                         | values                               | value labels                                                                                                                                                                                                                                             |
 |---------|-------------------------------------------------------------------------------|--------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| dm-01   | What is your race/ethnicity?                                                  | 1<br>2<br>3<br>4<br>5<br>6           | American Indian or Alaskan Native<br>Asian / Pacific Islander<br>Black or African American<br>Hispanic<br>White / Caucasian<br>Multiple ethnicity                                                                                                        |
+| dm-01   | What is your race/ethnicity?                                                  | 1<br>2<br>3<br>4<br>5<br>6<br>7      | American Indian or Alaskan Native<br>Asian / Pacific Islander<br>Black or African American<br>Hispanic<br>White / Caucasian<br>Multiple ethnicity<br> Hispanic and White / Caucasian                                                                     |
 | dm-02   | What is your gender?                                                          | 1<br>2<br>3<br>4                     | Male<br>Female<br>Non-binary / third gender<br>Prefer not to say                                                                                                                                                                                         |
 | dm-03   | How old are you?                                                              | range 18-75                          |                                                                                                                                                                                                                                                          |
 | dm-04   | What is the highest level of education you have completed?                    | 1<br>2<br>3<br>4<br>5                | 12th grade of less<br>High school graduate or GED<br>Some college/ Associates/ Technical school training<br>College graduate<br>Graduate school degree (Master's or Doctorate)                                                                           |
