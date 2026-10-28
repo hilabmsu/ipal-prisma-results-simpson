@@ -1,4 +1,7 @@
-# iPAL PRISMA Participant Database Structure
+# iPAL PRISMA Participant Data
+
+## Overview
+The iPAL PRISMA Results repository is an open analysis pipeline and dataset-documentation package for a study of immersive and mobile digital interventions for managing cravings in people with opioid use disorder (OUD). The study had 25 participants (mean age 38.5 ± 7.0; 16 male, 9 female). Each participant used the iPAL application, which delivers cognitive behavioral therapy (CBT) and heart-rate-variability (HRV) breathing exercises, on a phone and in augmented, mixed, and virtual reality headsets. The repository organizes the raw, processed, and analysis-ready data. These include wearable physiological recordings from the Empatica EmbracePlus (accelerometry, blood volume pulse, electrodermal activity, heart rate, inter-beat interval, and temperature) and self-report measures: simulator sickness (SSQ), usability (SUS), user engagement (UES), presence (IPQ), application evaluation (IAE), substance-use timeline follow-back (TLFB), stability scale (SS), and exit interviews. A Python toolkit (src/) provides instrument-specific scoring modules, a menu-driven analysis program, and figure generation. Outputs are exported as statistical plots. The repository also includes data dictionaries, missing-data codes, and notes on known data anomalies.
 
 ## Running the Analysis with Python
 The python scripts for running the analysis are located in the `src` directory.
