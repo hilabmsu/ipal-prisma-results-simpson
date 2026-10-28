@@ -169,23 +169,23 @@ S001/
 ---
 
 # Survey Order of Delivery
-* Onboarding
+* Onboarding (session 1)
   * Kenndey Simulator Sickness Questionnaire SSQ
-* Phone
+* Phone (session 1)
   * Demographic 
   * Stability survey (SS)
   * Timeline followback  (TLFB)
   * System Usability Study (SUS)
   * User Engagement Scale (UES)
   * iPAL Application Evaluation (IAE)
-* AR/VR/MR 
+* AR/VR/MR (sessions 2-4, randomly assigned)
   * Stability survey (SS)
   * Timeline followback  (TLFB)
   * iGroup Presence Questionnaire (IPQ)
   * System Usability Study (SUS)
   * User Engagement Scale (UES)
   * iPAL Application Evaluation (IAE)
-* Exit Interviews
+* Exit Interviews (session 5)
   * Stability survey (SS)
   * Timeline followback  (TLFB)
   * Exit Interview (EI)
